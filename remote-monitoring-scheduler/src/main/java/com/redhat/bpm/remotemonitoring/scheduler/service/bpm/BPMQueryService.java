@@ -108,7 +108,7 @@ public class BPMQueryService {
         query.setName(ACTIVE_PROCESSES_LASTMINUTES);
         query.setSource(datasource);
         query.setExpression("select * from processinstancelog plog where  externalid = '"+containerId+"'" +
-                "  and end_date is null or end_date > now() -interval '"+lastMinutes+"'");
+                "  and status = 1 or end_date > now() -interval '"+lastMinutes+"'");
         query.setTarget("CUSTOM");
         return query;
     }
