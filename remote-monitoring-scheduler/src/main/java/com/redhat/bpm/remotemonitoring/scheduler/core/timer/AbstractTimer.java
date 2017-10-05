@@ -18,15 +18,17 @@ public abstract class AbstractTimer {
 
 
     public void createTimer(MonitorDefinition payload, ScheduleExpression scheduleExpression, Logger logger) {
-        final String uuid = UUID.randomUUID().toString();
-        payload.setUuid(uuid);
-        TimerConfig config = new TimerConfig();
-        config.setPersistent(false);
-        config.setInfo(payload);
-        try {
-            timerService.createCalendarTimer(scheduleExpression, config);
-        } catch(Exception ex) {
-           logger.error("Can't create timer!", ex);
+        if(Boolean.valueOf(payload.getEnabled())) {
+            final String uuid = UUID.randomUUID().toString();
+            payload.setUuid(uuid);
+            TimerConfig config = new TimerConfig();
+            config.setPersistent(false);
+            config.setInfo(payload);
+            try {
+                timerService.createCalendarTimer(scheduleExpression, config);
+            } catch (Exception ex) {
+                logger.error("Can't create timer!", ex);
+            }
         }
     }
 
