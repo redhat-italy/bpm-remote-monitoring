@@ -14,7 +14,7 @@ public class MonitorDefinition implements Serializable, Cloneable {
     }
 
     public enum MonitorType {
-        ACTIVE_INSTANCES
+        ACTIVE_INSTANCES, ACTIVE_INSTANCES_LAST_MINUTES
     }
 
     @JsonIgnore
@@ -26,10 +26,18 @@ public class MonitorDefinition implements Serializable, Cloneable {
     private MonitorType type;
     private String name;
     private String description;
+    private Integer interval;
     private List<String> processesBlackList;
     private List<KieServerDefinition> kieservers;
     private ScheduleDefinition schedule;
 
+    public Integer getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Integer interval) {
+        this.interval = interval;
+    }
 
     public String getUuid() {
         return uuid;

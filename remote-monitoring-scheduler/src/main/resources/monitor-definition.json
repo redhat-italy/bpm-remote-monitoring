@@ -9,15 +9,39 @@
     "second": 0
   },
   "kieservers": [{
-    "protocol": "http",
-    "host": "localhost",
+    "protocol": "",
+    "host": "",
     "port": 8080,
-    "context": "kie-server",
+    "context": "",
     "user": "",
     "timeout": 30000,
     "pwd": "",
     "containerId": ""
   }],
   "processesBlackList": [""]
-}
+},
+  {
+    "enabled": "true",
+    "type": "ACTIVE_INSTANCES_LAST_MINUTES",
+    "name": "monitor_active_instances_last_minutes",
+    "description": "Monitor Active BPM instances in last minute",
+    "interval": 3,
+    "schedule": {
+      "hour": "*",
+      "minute": "*/5",
+      "second": 0
+    },
+    "kieservers": [{
+      "protocol": "",
+      "host": "",
+      "port": 8080,
+      "context": "",
+      "user": "",
+      "timeout": 30000,
+      "pwd": "",
+      "containerId": "",
+      "datasource": ""
+    }],
+    "processesBlackList": [""]
+  }
 ]

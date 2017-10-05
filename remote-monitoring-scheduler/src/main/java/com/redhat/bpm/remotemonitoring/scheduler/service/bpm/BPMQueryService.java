@@ -3,6 +3,7 @@ package com.redhat.bpm.remotemonitoring.scheduler.service.bpm;
 import com.redhat.bpm.remotemonitoring.scheduler.model.KieServerDefinition;
 import org.apache.commons.collections.CollectionUtils;
 import org.kie.server.api.marshalling.MarshallingFormat;
+import org.kie.server.api.model.definition.QueryDefinition;
 import org.kie.server.api.model.instance.ProcessInstance;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
@@ -23,7 +24,7 @@ public class BPMQueryService {
     private final static Logger logger = LoggerFactory.getLogger(BPMQueryService.class);
 
     private final static int MAX_PROCESS_BY_QUERY = 1000;
-
+    private final static String ACTIVE_PROCESSES_LASTMINUTES = "ActiveProcessesLastMinutes";
 
     public static List<ProcessInstance> activeProcesses(KieServerDefinition kieServerDefinition, List<String> processesBlackList) {
         String serverUrl = new StringBuilder(kieServerDefinition.getProtocol())
@@ -33,17 +34,14 @@ public class BPMQueryService {
                 .append("/services/rest/server")
                 .toString();
 
-        logger.info("KIE SERVER Url {}", serverUrl);
-
         KieServicesConfiguration config = KieServicesFactory.newRestConfiguration(serverUrl, kieServerDefinition.getUser(), kieServerDefinition.getPwd());
         config.setMarshallingFormat(MarshallingFormat.JSON);
         config.setTimeout(kieServerDefinition.getTimeout());
         KieServicesClient client = KieServicesFactory.newKieServicesClient(config);
-
         QueryServicesClient queryClient = client.getServicesClient(QueryServicesClient.class);
+
         List<ProcessInstance> result = new ArrayList<>();
         int page = 0;
-
         List<ProcessInstance> processInstances =
                 queryClient.findProcessInstancesByContainerId(kieServerDefinition.getContainerId(), Arrays.asList(STATE_ACTIVE), page, MAX_PROCESS_BY_QUERY);;
         while(processInstances.size() == MAX_PROCESS_BY_QUERY) {
@@ -62,6 +60,39 @@ public class BPMQueryService {
 
     }
 
+    public static List<ProcessInstance> activeProcessesLastMinutes(KieServerDefinition kieServerDefinition, Integer interval, List<String> processesBlackList) {
+        String serverUrl = new StringBuilder(kieServerDefinition.getProtocol())
+                .append("://").append(kieServerDefinition.getHost())
+                .append(":").append(kieServerDefinition.getPort())
+                .append("/").append(kieServerDefinition.getContext())
+                .append("/services/rest/server")
+                .toString();
+
+        KieServicesConfiguration config = KieServicesFactory.newRestConfiguration(serverUrl, kieServerDefinition.getUser(), kieServerDefinition.getPwd());
+        config.setMarshallingFormat(MarshallingFormat.JSON);
+        config.setTimeout(kieServerDefinition.getTimeout());
+        KieServicesClient client = KieServicesFactory.newKieServicesClient(config);
+        QueryServicesClient queryClient = client.getServicesClient(QueryServicesClient.class);
+        QueryDefinition queryDefinition = createQueryDefinitionForActiveProcessesLastMinute(kieServerDefinition.getDatasource(), kieServerDefinition.getContainerId(), interval);
+        client.getServicesClient(QueryServicesClient.class).replaceQuery(queryDefinition);
+
+        List<ProcessInstance> result = new ArrayList<>();
+        int page = 0;
+        List<ProcessInstance> processInstances = queryClient.query(queryDefinition.getName(), QueryServicesClient.QUERY_MAP_PI, "processId asc, processInstanceId desc", page, MAX_PROCESS_BY_QUERY, ProcessInstance.class);
+        while(processInstances.size() == MAX_PROCESS_BY_QUERY) {
+            page++;
+            ignoreBlacklistedProcesses(processesBlackList, result, processInstances);
+            processInstances = queryClient.query(queryDefinition.getName(), QueryServicesClient.QUERY_MAP_PI, page, MAX_PROCESS_BY_QUERY, ProcessInstance.class);
+        }
+        if(page == 0 && CollectionUtils.isNotEmpty(processInstances))
+            ignoreBlacklistedProcesses(processesBlackList, result, processInstances);
+
+        client.completeConversation();
+
+        return result;
+
+    }
+
     private static void ignoreBlacklistedProcesses(List<String> processesBlackList, List<ProcessInstance> result, List<ProcessInstance> processInstances) {
         for (ProcessInstance processInstance : processInstances) {
             if (processesBlackList.contains(processInstance.getProcessId()))
@@ -69,6 +100,17 @@ public class BPMQueryService {
             else
                 result.add(processInstance);
         }
+    }
+
+    private static QueryDefinition createQueryDefinitionForActiveProcessesLastMinute(String datasource, String containerId, Integer interval) {
+        String lastMinutes = interval + " minutes";
+        QueryDefinition query = new QueryDefinition();
+        query.setName(ACTIVE_PROCESSES_LASTMINUTES);
+        query.setSource(datasource);
+        query.setExpression("select * from processinstancelog plog where  externalid = '"+containerId+"'" +
+                "  and end_date is null or end_date > now() -interval '"+lastMinutes+"'");
+        query.setTarget("CUSTOM");
+        return query;
     }
 
 

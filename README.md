@@ -18,20 +18,45 @@ Timer definitions are defined in a json file:
     "second": 0
   },
   "kieservers": [{
-    "protocol": "http",
-    "host": "localhost",
-    "port": 8080,
-    "context": "kie-server",
+    "protocol": "",
+    "host": "",
+    "port": ,
+    "context": "",
     "user": "",
-    "timeout": 30000,
+    "timeout": ,
     "pwd": "",
     "containerId": ""
   }],
   "processesBlackList": [""]
-}
+},
+  {
+    "enabled": "true",
+    "type": "ACTIVE_INSTANCES_LAST_MINUTES",
+    "name": "monitor_active_instances_last_minutes",
+    "description": "Monitor Active BPM instances in XX minutes",
+    "interval": 3,
+    "schedule": {
+      "hour": "*",
+      "minute": "*/1",
+      "second": 0
+    },
+    "kieservers": [{
+      "protocol": "",
+      "host": "",
+      "port": ,
+      "context": "",
+      "user": "",
+      "timeout": ,
+      "pwd": "",
+      "containerId": "",
+      "datasource": ""
+    }],
+    "processesBlackList": [""]
+  }
 ]
 ```
 
 Timer defintions available so far:
 
-  - ACTIVE_INSTANCES, Monitor Active BPM instances for Kie Server
+  - ACTIVE_INSTANCES, Monitor Active BPM instances
+  - ACTIVE_INSTANCES_LAST_MINUTES, Monitor Active BPM instances in last XX minutes

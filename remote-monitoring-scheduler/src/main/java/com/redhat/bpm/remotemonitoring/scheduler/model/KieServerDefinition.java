@@ -8,6 +8,7 @@ public class KieServerDefinition {
     private String user;
     private String pwd;
     private String containerId;
+    private String datasource;
     private Integer timeout;
     private Integer port;
 
@@ -73,6 +74,14 @@ public class KieServerDefinition {
 
     public void setContainerId(String containerId) {
         this.containerId = containerId;
+    }
+
+    public String getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(String datasource) {
+        this.datasource = datasource;
     }
 
 

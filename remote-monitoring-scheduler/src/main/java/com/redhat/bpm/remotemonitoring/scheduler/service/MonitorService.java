@@ -19,6 +19,12 @@ public class MonitorService {
     public void evaluate(MonitorDefinition monitorDefinition) {
 
         switch (monitorDefinition.getType()) {
+
+            /**
+             *  select * from processinstancelog plog where  externalid = $1
+             *  and status = 1 and processId not in ($2)
+             */
+
             case ACTIVE_INSTANCES:
                 int processInstancesSize = 0;
                 for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
@@ -28,12 +34,30 @@ public class MonitorService {
                 }
                 logger.info("Processes instance ACTIVE: {}", processInstancesSize);
                 break;
+
+            /**
+             *  select * from processinstancelog plog where  externalid = 'com.enel.workbeat:acq-process:1.4.0-SNAPSHOT'
+             *  and processId not in ('com.enel.workbeat.common.process.rest-client')
+                and end_date is null or end_date > now() -interval '1 minutes'
+             */
+
+            case ACTIVE_INSTANCES_LAST_MINUTES:
+                int processInstancesLastMinuteSize = 0;
+                for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
+                    List<ProcessInstance> processInstances = BPMQueryService.activeProcessesLastMinutes(kieServerDefinition, monitorDefinition.getInterval(), monitorDefinition.getProcessesBlackList());
+                    if (CollectionUtils.isNotEmpty(processInstances))
+                        processInstancesLastMinuteSize += processInstances.size();
+                }
+                logger.info("Processes instance ACTIVE during last minute: {}", processInstancesLastMinuteSize);
+                break;
             default:
                 break;
         }
 
 
     }
+
+
 
 
 }
