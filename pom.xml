@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <name>bpm-remote-monitoring</name>
+    <description>Monitor Remote Kie Server</description>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redhat.bpm</groupId>
+    <artifactId>remotemonitoring</artifactId>
+    <version>0.1</version>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>remote-monitoring-scheduler</module>
+	    <module>remote-monitoring-ear</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+
+        <version.org.kie>6.5.0.Final-redhat-12</version.org.kie>
+
+        <version.org.slf4j>1.7.15</version.org.slf4j>
+        <version.junit>4.11</version.junit>
+        <version-ejb-spec>1.0.0.Final</version-ejb-spec>
+        <version-ejb-ext>2.1.0</version-ejb-ext>
+        <version.ear.plugin>2.10</version.ear.plugin>
+        <version-cdi-redhat>1.2.0.redhat-2</version-cdi-redhat>
+        <version-apache-commons-collection>3.2.1</version-apache-commons-collection>
+        <version-apache-commons-lang>2.3</version-apache-commons-lang>
+        <version-apache-commons-io>2.4</version-apache-commons-io>
+        <version-jackson.version>2.5.1</version-jackson.version>
+
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jboss-ga</id>
+            <url>https://maven.repository.redhat.com/ga</url>
+        </repository>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>com.redhat.bpm</groupId>
+                <artifactId>scheduler</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>${version-cdi-redhat}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.ejb</groupId>
+                <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                <version>${version-ejb-spec}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.ejb3</groupId>
+                <artifactId>jboss-ejb3-ext-api</artifactId>
+                <version>${version-ejb-ext}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${version-apache-commons-collection}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version-apache-commons-lang}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${version-apache-commons-io}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kie.server</groupId>
+                <artifactId>kie-server-client</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version-jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.org.slf4j}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>

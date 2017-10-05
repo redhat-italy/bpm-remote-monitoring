@@ -1,0 +1,23 @@
+[{
+  "enabled": "true",
+  "type": "ACTIVE_INSTANCES",
+  "name": "monitor_active_instances",
+  "description": "Monitor Active BPM instances",
+  "schedule": {
+    "hour": "*",
+    "minute": "*/5",
+    "second": 0
+  },
+  "kieservers": [{
+    "protocol": "http",
+    "host": "localhost",
+    "port": 8080,
+    "context": "kie-server",
+    "user": "",
+    "timeout": 30000,
+    "pwd": "",
+    "containerId": ""
+  }],
+  "processesBlackList": [""]
+}
+]
