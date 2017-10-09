@@ -30,10 +30,11 @@ public class MonitorService {
 
             case EAP_INUSE_DATASOURCE:
                 for(Server server: monitorDefinition.getJolokiaservers()) {
+                    final String datasourceDetails = server.getHost() + ":" + server.getPort() + " - " + monitorDefinition.getAdditionalArgs().get(0);
                     JMXBean jmxBean = JMXBeanFactory.fillJMXBean(monitorDefinition.getType(), monitorDefinition.getAdditionalArgs());
                     JolokiaResponse jolokiaResponse = jolokiaService.post(server, jmxBean);
                     if(jolokiaResponse.getStatus() == 200)
-                        logger.info("Datasource: {} in use count {}", monitorDefinition.getAdditionalArgs().get(0), jolokiaResponse.getContent());
+                        logger.info("Datasource: {} in use count {}", datasourceDetails, jolokiaResponse.getContent());
                 }
                 break;
 
@@ -45,27 +46,31 @@ public class MonitorService {
             case ACTIVE_INSTANCES:
                 int processInstancesSize = 0;
                 for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
+                    final String kieserverName = kieServerDefinition.getHost() + ":" + kieServerDefinition.getPort() + " - " + kieServerDefinition.getContainerId();
                     List<ProcessInstance> processInstances = bpmQueryService.activeProcesses(kieServerDefinition, monitorDefinition.getProcessesBlackList());
                     if (CollectionUtils.isNotEmpty(processInstances))
+                        logger.info("BPM processes instance ACTIVE for kie server {}: {}", kieserverName, processInstances.size());
                         processInstancesSize += processInstances.size();
                 }
-                logger.info("Processes instance ACTIVE: {}", processInstancesSize);
+                logger.info("Total BPM processes instance ACTIVE: {}", processInstancesSize);
                 break;
 
             /**
              *  select * from processinstancelog plog where  externalid = 'com.enel.workbeat:acq-process:1.4.0-SNAPSHOT'
              *  and processId not in ('com.enel.workbeat.common.process.rest-client')
-                and end_date is null or end_date > now() -interval '1 minutes'
+                and end_date is null or end_date > now() -interval 'XX minutes'
              */
 
             case ACTIVE_INSTANCES_LAST_MINUTES:
-                int processInstancesLastMinuteSize = 0;
+                int processInstancesLastIntervalSize = 0;
                 for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
-                    List<ProcessInstance> processInstances = bpmQueryService.activeProcessesLastMinutes(kieServerDefinition, monitorDefinition.getInterval(), monitorDefinition.getProcessesBlackList());
+                    final String kieserverName = kieServerDefinition.getHost() + ":" + kieServerDefinition.getPort() + " - " + kieServerDefinition.getContainerId();
+                    List<ProcessInstance> processInstances = bpmQueryService.activeProcessesLastInterval(kieServerDefinition, monitorDefinition.getInterval(), monitorDefinition.getProcessesBlackList());
                     if (CollectionUtils.isNotEmpty(processInstances))
-                        processInstancesLastMinuteSize += processInstances.size();
+                        logger.info("BPM processes instance ACTIVE for kie server " + kieserverName + ", during last interval: {} - {} minutes", processInstances.size(), monitorDefinition.getInterval());
+                    processInstancesLastIntervalSize += processInstances.size();
                 }
-                logger.info("Processes instance ACTIVE during last minute: {}", processInstancesLastMinuteSize);
+                logger.info("Total BPM processes instance ACTIVE during last interval: {} - {} minutes", processInstancesLastIntervalSize, monitorDefinition.getInterval());
                 break;
             default:
                 break;

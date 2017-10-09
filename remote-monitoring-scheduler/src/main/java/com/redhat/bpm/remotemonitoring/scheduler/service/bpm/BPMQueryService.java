@@ -61,7 +61,7 @@ public class BPMQueryService {
 
     }
 
-    public List<ProcessInstance> activeProcessesLastMinutes(KieServerDefinition kieServerDefinition, Integer interval, List<String> processesBlackList) {
+    public List<ProcessInstance> activeProcessesLastInterval(KieServerDefinition kieServerDefinition, Integer interval, List<String> processesBlackList) {
         String serverUrl = new StringBuilder(kieServerDefinition.getProtocol())
                 .append("://").append(kieServerDefinition.getHost())
                 .append(":").append(kieServerDefinition.getPort())
@@ -74,7 +74,7 @@ public class BPMQueryService {
         config.setTimeout(kieServerDefinition.getTimeout());
         KieServicesClient client = KieServicesFactory.newKieServicesClient(config);
         QueryServicesClient queryClient = client.getServicesClient(QueryServicesClient.class);
-        QueryDefinition queryDefinition = createQueryDefinitionForActiveProcessesLastMinute(kieServerDefinition.getDatasource(), kieServerDefinition.getContainerId(), interval);
+        QueryDefinition queryDefinition = createQueryDefinitionForActiveProcessesLastInterval(kieServerDefinition.getDatasource(), kieServerDefinition.getContainerId(), interval);
         client.getServicesClient(QueryServicesClient.class).replaceQuery(queryDefinition);
 
         List<ProcessInstance> result = new ArrayList<>();
@@ -103,7 +103,7 @@ public class BPMQueryService {
         }
     }
 
-    private QueryDefinition createQueryDefinitionForActiveProcessesLastMinute(String datasource, String containerId, Integer interval) {
+    private QueryDefinition createQueryDefinitionForActiveProcessesLastInterval(String datasource, String containerId, Integer interval) {
         String lastMinutes = interval + " minutes";
         QueryDefinition query = new QueryDefinition();
         query.setName(ACTIVE_PROCESSES_LASTMINUTES);
