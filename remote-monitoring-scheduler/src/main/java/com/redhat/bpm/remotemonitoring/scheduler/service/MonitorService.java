@@ -3,12 +3,14 @@ package com.redhat.bpm.remotemonitoring.scheduler.service;
 import com.redhat.bpm.remotemonitoring.scheduler.model.KieServerDefinition;
 import com.redhat.bpm.remotemonitoring.scheduler.model.MonitorDefinition;
 import com.redhat.bpm.remotemonitoring.scheduler.service.bpm.BPMQueryService;
+import com.redhat.bpm.remotemonitoring.scheduler.service.jolokia.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.kie.server.api.model.instance.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
@@ -16,9 +18,24 @@ public class MonitorService {
 
     private final Logger logger = LoggerFactory.getLogger(MonitorService.class);
 
+    @Inject
+    JolokiaService jolokiaService;
+
+    @Inject
+    BPMQueryService bpmQueryService;
+
     public void evaluate(MonitorDefinition monitorDefinition) {
 
         switch (monitorDefinition.getType()) {
+
+            case EAP_INUSE_DATASOURCE:
+                for(Server server: monitorDefinition.getJolokiaservers()) {
+                    JMXBean jmxBean = JMXBeanFactory.fillJMXBean(monitorDefinition.getType(), monitorDefinition.getAdditionalArgs());
+                    JolokiaResponse jolokiaResponse = jolokiaService.post(server, jmxBean);
+                    if(jolokiaResponse.getStatus() == 200)
+                        logger.info("Datasource: {} in use count {}", monitorDefinition.getAdditionalArgs().get(0), jolokiaResponse.getContent());
+                }
+                break;
 
             /**
              *  select * from processinstancelog plog where  externalid = $1
@@ -28,7 +45,7 @@ public class MonitorService {
             case ACTIVE_INSTANCES:
                 int processInstancesSize = 0;
                 for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
-                    List<ProcessInstance> processInstances = BPMQueryService.activeProcesses(kieServerDefinition, monitorDefinition.getProcessesBlackList());
+                    List<ProcessInstance> processInstances = bpmQueryService.activeProcesses(kieServerDefinition, monitorDefinition.getProcessesBlackList());
                     if (CollectionUtils.isNotEmpty(processInstances))
                         processInstancesSize += processInstances.size();
                 }
@@ -44,7 +61,7 @@ public class MonitorService {
             case ACTIVE_INSTANCES_LAST_MINUTES:
                 int processInstancesLastMinuteSize = 0;
                 for (KieServerDefinition kieServerDefinition : monitorDefinition.getKieservers()) {
-                    List<ProcessInstance> processInstances = BPMQueryService.activeProcessesLastMinutes(kieServerDefinition, monitorDefinition.getInterval(), monitorDefinition.getProcessesBlackList());
+                    List<ProcessInstance> processInstances = bpmQueryService.activeProcessesLastMinutes(kieServerDefinition, monitorDefinition.getInterval(), monitorDefinition.getProcessesBlackList());
                     if (CollectionUtils.isNotEmpty(processInstances))
                         processInstancesLastMinuteSize += processInstances.size();
                 }

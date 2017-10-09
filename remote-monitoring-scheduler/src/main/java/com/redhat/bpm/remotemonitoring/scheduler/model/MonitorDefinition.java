@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.redhat.bpm.remotemonitoring.scheduler.service.jolokia.Server;
 import org.apache.commons.lang.SerializationUtils;
 
 public class MonitorDefinition implements Serializable, Cloneable {
@@ -14,7 +15,7 @@ public class MonitorDefinition implements Serializable, Cloneable {
     }
 
     public enum MonitorType {
-        ACTIVE_INSTANCES, ACTIVE_INSTANCES_LAST_MINUTES
+        ACTIVE_INSTANCES, ACTIVE_INSTANCES_LAST_MINUTES, EAP_INUSE_DATASOURCE
     }
 
     @JsonIgnore
@@ -28,7 +29,9 @@ public class MonitorDefinition implements Serializable, Cloneable {
     private String description;
     private Integer interval;
     private List<String> processesBlackList;
+    private List<String> additionalArgs;
     private List<KieServerDefinition> kieservers;
+    private List<Server> jolokiaservers;
     private ScheduleDefinition schedule;
 
     public Integer getInterval() {
@@ -117,6 +120,22 @@ public class MonitorDefinition implements Serializable, Cloneable {
 
     public void setSchedule(ScheduleDefinition schedule) {
         this.schedule = schedule;
+    }
+
+    public List<String> getAdditionalArgs() {
+        return additionalArgs;
+    }
+
+    public void setAdditionalArgs(List<String> additionalArgs) {
+        this.additionalArgs = additionalArgs;
+    }
+
+    public List<Server> getJolokiaservers() {
+        return jolokiaservers;
+    }
+
+    public void setJolokiaservers(List<Server> jolokiaservers) {
+        this.jolokiaservers = jolokiaservers;
     }
 
     @Override

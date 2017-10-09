@@ -12,13 +12,14 @@ import org.kie.server.client.QueryServicesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 
-
+@ApplicationScoped
 public class BPMQueryService {
 
     private final static Logger logger = LoggerFactory.getLogger(BPMQueryService.class);
@@ -26,7 +27,7 @@ public class BPMQueryService {
     private final static int MAX_PROCESS_BY_QUERY = 1000;
     private final static String ACTIVE_PROCESSES_LASTMINUTES = "ActiveProcessesLastMinutes";
 
-    public static List<ProcessInstance> activeProcesses(KieServerDefinition kieServerDefinition, List<String> processesBlackList) {
+    public List<ProcessInstance> activeProcesses(KieServerDefinition kieServerDefinition, List<String> processesBlackList) {
         String serverUrl = new StringBuilder(kieServerDefinition.getProtocol())
                 .append("://").append(kieServerDefinition.getHost())
                 .append(":").append(kieServerDefinition.getPort())
@@ -60,7 +61,7 @@ public class BPMQueryService {
 
     }
 
-    public static List<ProcessInstance> activeProcessesLastMinutes(KieServerDefinition kieServerDefinition, Integer interval, List<String> processesBlackList) {
+    public List<ProcessInstance> activeProcessesLastMinutes(KieServerDefinition kieServerDefinition, Integer interval, List<String> processesBlackList) {
         String serverUrl = new StringBuilder(kieServerDefinition.getProtocol())
                 .append("://").append(kieServerDefinition.getHost())
                 .append(":").append(kieServerDefinition.getPort())
@@ -93,7 +94,7 @@ public class BPMQueryService {
 
     }
 
-    private static void ignoreBlacklistedProcesses(List<String> processesBlackList, List<ProcessInstance> result, List<ProcessInstance> processInstances) {
+    private void ignoreBlacklistedProcesses(List<String> processesBlackList, List<ProcessInstance> result, List<ProcessInstance> processInstances) {
         for (ProcessInstance processInstance : processInstances) {
             if (processesBlackList.contains(processInstance.getProcessId()))
                 continue;
@@ -102,7 +103,7 @@ public class BPMQueryService {
         }
     }
 
-    private static QueryDefinition createQueryDefinitionForActiveProcessesLastMinute(String datasource, String containerId, Integer interval) {
+    private QueryDefinition createQueryDefinitionForActiveProcessesLastMinute(String datasource, String containerId, Integer interval) {
         String lastMinutes = interval + " minutes";
         QueryDefinition query = new QueryDefinition();
         query.setName(ACTIVE_PROCESSES_LASTMINUTES);

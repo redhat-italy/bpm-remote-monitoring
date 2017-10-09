@@ -40,7 +40,10 @@
         <version-apache-commons-collection>3.2.1</version-apache-commons-collection>
         <version-apache-commons-lang>2.3</version-apache-commons-lang>
         <version-apache-commons-io>2.4</version-apache-commons-io>
+        <version-apache-commons-configuration>1.10</version-apache-commons-configuration>
         <version-jackson.version>2.5.1</version-jackson.version>
+        <version-apache-httpclient>4.4</version-apache-httpclient>
+        <version-org-jsonversion>20160212</version-org-jsonversion>
 
     </properties>
 
@@ -102,6 +105,12 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>${version-apache-commons-configuration}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${version-apache-commons-lang}</version>
@@ -111,6 +120,12 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${version-apache-commons-io}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version-apache-httpclient}</version>
             </dependency>
 
             <dependency>
@@ -125,6 +140,13 @@
                 <version>${version-jackson.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${version-org-jsonversion}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.slf4j</groupId>
