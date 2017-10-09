@@ -86,7 +86,7 @@ the json file must be placed in *$JBOSS_HOME/standalone/configuration* directory
     "enabled": "true",
     "type": "EAP_INUSE_DATASOURCE",
     "name": "monitor_inuse_datasource",
-    "description": "Monitor In use datasource connections",
+    "description": "Monitor In Use datasource connections",
     "schedule": {
       "hour": "*",
       "minute": "*/5",
@@ -135,13 +135,13 @@ Json fields detail:
       - containerId --> string - kie container id to Monitor
       - datasource --> jbpm jndi datasource name for kie server
   - jolokiaservers --> list of objects identifying the jolokia servers to connect:
-          - protocol: --> string - http or https
-          - host: --> string - hostname of jolokia server
-          - port: --> integer - port of jolokia server
-          - jolokiaContext: --> string - context path where jolokia server REST API are bounded
-          - user: --> string - user granted to use REST API for the jolokia server
-          - password: --> string - password of the user
-          - basicAuth: --> true|false - if basic auth is enabled on jolokia (need user and password)
+      - protocol: --> string - http or https
+      - host: --> string - hostname of jolokia server
+      - port: --> integer - port of jolokia server
+      - jolokiaContext: --> string - context path where jolokia server REST API are bounded
+      - user: --> string - user granted to use REST API for the jolokia server
+      - password: --> string - password of the user
+      - basicAuth: --> true|false - if basic auth is enabled on jolokia (need user and password)
   - additionalArgs --> list of addiitonal strings to pass to metrics; so far it is in use only for
   jolokia metrics (ex. name of datasource)
 
@@ -155,11 +155,11 @@ Json fields detail:
   https://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html
 
   Properties fields:
-    - http_client_pool_maxSize --> integer - number of http client connections total in pool
-    - http_client_pool_maxSizePerRoute --> integer - number of http client connections per route
-    - http_client_keepAlive --> true|false - keep alive on/off
-    - http_client_keepAlive_duration --> integer - keep alive connections for n seconds
-    - http_client_socketTimeout --> integer - defines the socket timeout (SO_TIMEOUT) in milliseconds, which is the timeout for waiting for data
-    - http_client_connectTimeout --> integer - determines the timeout in milliseconds until a connection is established
-    - http_client_maxRedirects --> integer - maximum number of redirects per route
-    - http_client_pool_idleCheck --> integer - defines the interval in seconds to check for idle http connections
+  - http_client_pool_maxSize --> integer - number of http client connections total in pool
+  - http_client_pool_maxSizePerRoute --> integer - number of http client connections per route
+  - http_client_keepAlive --> true|false - keep alive on/off
+  - http_client_keepAlive_duration --> integer - keep alive connections for n seconds
+  - http_client_socketTimeout --> integer - defines the socket timeout (SO_TIMEOUT) in milliseconds, which is the timeout for waiting for data
+  - http_client_connectTimeout --> integer - determines the timeout in milliseconds until a connection is established
+  - http_client_maxRedirects --> integer - maximum number of redirects per route
+  - http_client_pool_idleCheck --> integer - defines the interval in seconds to check for idle http connections
